@@ -40,6 +40,8 @@ app.post(PATH.API.INSERT_SUPPLY_ABILITY, controller.setData.insertSupplyAbility)
 
 app.post(PATH.API.GET_DISTRIBUTION_DATA, controller.getData.getDistributionData);
 
+app.post(PATH.API.GET_DATA_TEST, controller.getData.getDataTest);
+
 
 app.listen(port, () => {
     console.log(`App running on port ${port}.`)

@@ -13,6 +13,7 @@ PATH.API = {
     CLUSTER: '/api/cluster',
     INSERT_SUPPLY_ABILITY: '/api/insert-supply-ability',
     GET_DISTRIBUTION_DATA: '/api/get-distribution-data',
+    GET_DATA_TEST: '/api/get-data-test',
 }
 
 const role = {

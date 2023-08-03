@@ -41,6 +41,11 @@ const getDistributionData = async(req, res) => {
     res.status(200).json(result);
 }
 
+const getDataTest = async(req, res) => {
+    let result = await queries.queryTest();
+    res.status(200).json(result);
+}
+
 module.exports = {
     getEpidemicData,
     getPandemicData,
@@ -49,4 +54,5 @@ module.exports = {
     getEpidemicDataOfAllProvinces,
     getSupplyQuantityOfAllProvinces,
     getDistributionData,
+    getDataTest,
 };

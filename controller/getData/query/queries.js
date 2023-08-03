@@ -171,6 +171,11 @@ const queryDistributionData = async(pandemic_id, supply_type_id) => {
     return supplyAbilityList;
 }
 
+const queryTest = async() => {
+    const provinces = await reader.readProvince();
+    return provinces;
+}
+
 module.exports = {
     queryEpidemicData,
     queryPandemicData,
@@ -179,4 +184,5 @@ module.exports = {
     queryEpidemicDataOfAllProvinces,
     querySupplyQuantityOfAllProvinces,
     queryDistributionData,
+    queryTest,
 }
