@@ -7,9 +7,9 @@ const queryEpidemicData = async(province_id, pandemic_id, date) => {
         const diffDays = Math.ceil((myDate.getTime() - eDate.getTime()) / (1000 * 3600 * 24));
         return e.province_id == province_id && diffDays >= 1 && diffDays <= 7;
     }
-    const infectionList = (await reader.readInfectionSituation()).filter(e => getDateRangeData(e))
-    const recoveredList = (await reader.readRecoveredSituation()).filter(e => getDateRangeData(e))
-    const deathList = (await reader.readDeathSituation()).filter(e => getDateRangeData(e))
+    const infectionList = (await reader.readInfectionSituation(pandemic_id)).filter(e => getDateRangeData(e))
+    const recoveredList = (await reader.readRecoveredSituation(pandemic_id)).filter(e => getDateRangeData(e))
+    const deathList = (await reader.readDeathSituation(pandemic_id)).filter(e => getDateRangeData(e))
     return {
         dateRange: infectionList.map(e => e.date),
         infection: {
@@ -84,9 +84,9 @@ const queryAllEmail = async(email) => {
 const queryEpidemicDataOfAllProvinces = async(pandemic_id, date) => {
     const myDate = new Date(date)
     const provinces = await reader.readProvince();
-    const infection = await reader.readInfectionSituation();
-    const recovered = await reader.readRecoveredSituation();
-    const death = await reader.readDeathSituation();
+    const infection = await reader.readInfectionSituation(pandemic_id);
+    const recovered = await reader.readRecoveredSituation(pandemic_id);
+    const death = await reader.readDeathSituation(pandemic_id);
 
     const getDateRangeData = (e, province_id) => {
         const eDate = new Date(e.date);
@@ -171,9 +171,16 @@ const queryDistributionData = async(pandemic_id, supply_type_id) => {
     return supplyAbilityList;
 }
 
-const queryTest = async() => {
-    const provinces = await reader.readProvince();
-    return provinces;
+const queryProvinceData = async() => {
+    return reader.readProvince();
+}
+
+const queryMedicalSupplyData = async() => {
+    return reader.readMedicalSupply();
+}
+
+const querySupplyTypeData = async() => {
+    return reader.readSupplyType();
 }
 
 module.exports = {
@@ -184,5 +191,7 @@ module.exports = {
     queryEpidemicDataOfAllProvinces,
     querySupplyQuantityOfAllProvinces,
     queryDistributionData,
-    queryTest,
+    queryProvinceData,
+    queryMedicalSupplyData,
+    querySupplyTypeData,
 }

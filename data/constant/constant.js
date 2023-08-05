@@ -2,7 +2,10 @@ const PATH = {}
 
 PATH.API = {
     LOGIN: '/api/login',
+    GET_PROVINCE_DATA: '/api/get-province',
     GET_PANDEMIC_DATA: '/api/get-pandemic',
+    GET_SUPPLY_TYPE_DATA: '/api/get-supply-type',
+    GET_MEDICAL_SUPPLY_DATA: '/api/get-medical-supply',
     GET_EPIDEMIC_DATA: '/api/get-epidemic',
     GET_SUPPLY_QUANTITY: '/api/get-supply-quantity',
     GET_ALL_EMAIL: '/api/get-all-eamil',
@@ -13,7 +16,6 @@ PATH.API = {
     CLUSTER: '/api/cluster',
     INSERT_SUPPLY_ABILITY: '/api/insert-supply-ability',
     GET_DISTRIBUTION_DATA: '/api/get-distribution-data',
-    GET_DATA_TEST: '/api/get-data-test',
 }
 
 const role = {
