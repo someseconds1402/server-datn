@@ -1,15 +1,18 @@
 const reader = require('./../../../data/function/readfile/readfile')
+const dijkstra = require('./../../dijkstra/dijkstra')
+const Graph = require('./../../dijkstra/Graph')
 
 const queryEpidemicData = async(province_id, pandemic_id, date) => {
     const myDate = new Date(date)
     const getDateRangeData = e => {
         const eDate = new Date(e.date);
         const diffDays = Math.ceil((myDate.getTime() - eDate.getTime()) / (1000 * 3600 * 24));
-        return e.province_id == province_id && diffDays >= 1 && diffDays <= 7;
+        return e.province_id == province_id && e.pandemic_id == pandemic_id && diffDays >= 1 && diffDays <= 7;
     }
-    const infectionList = (await reader.readInfectionSituation(pandemic_id)).filter(e => getDateRangeData(e))
-    const recoveredList = (await reader.readRecoveredSituation(pandemic_id)).filter(e => getDateRangeData(e))
-    const deathList = (await reader.readDeathSituation(pandemic_id)).filter(e => getDateRangeData(e))
+    const infectionList = (await reader.readInfectionSituation()).filter(e => getDateRangeData(e))
+    const recoveredList = (await reader.readRecoveredSituation()).filter(e => getDateRangeData(e))
+    const deathList = (await reader.readDeathSituation()).filter(e => getDateRangeData(e))
+    const levelList = (await reader.readLevel()).filter(e => getDateRangeData(e))
     return {
         dateRange: infectionList.map(e => e.date),
         infection: {
@@ -23,6 +26,10 @@ const queryEpidemicData = async(province_id, pandemic_id, date) => {
         death: {
             title: 'Tử vong',
             list: deathList
+        },
+        level: {
+            title: 'Cấp độ dịch',
+            list: levelList
         }
     };
 }
@@ -84,14 +91,14 @@ const queryAllEmail = async(email) => {
 const queryEpidemicDataOfAllProvinces = async(pandemic_id, date) => {
     const myDate = new Date(date)
     const provinces = await reader.readProvince();
-    const infection = await reader.readInfectionSituation(pandemic_id);
-    const recovered = await reader.readRecoveredSituation(pandemic_id);
-    const death = await reader.readDeathSituation(pandemic_id);
+    const infection = await reader.readInfectionSituation();
+    const recovered = await reader.readRecoveredSituation();
+    const death = await reader.readDeathSituation();
 
     const getDateRangeData = (e, province_id) => {
         const eDate = new Date(e.date);
         const diffDays = Math.ceil((myDate.getTime() - eDate.getTime()) / (1000 * 3600 * 24));
-        return e.province_id == province_id && diffDays >= 1 && diffDays <= 7;
+        return e.province_id == province_id && e.pandemic_id == pandemic_id && diffDays >= 1 && diffDays <= 7;
     }
 
     const result = provinces.map((province) => {
@@ -162,13 +169,28 @@ const querySupplyQuantityOfAllProvinces = async(pandemic_id) => {
     }
 }
 
-const queryDistributionData = async(pandemic_id, supply_type_id) => {
+const querySupplyAbility = async(pandemic_id, supply_type_id) => {
     const supply_ability = await reader.readSupplyAbility();
 
     const supplyAbilityList = supply_ability.filter(e =>
         e.pandemic_id == pandemic_id && e.supply_type_id == supply_type_id);
     // console.log(supplyAbilityList);
     return supplyAbilityList;
+}
+
+const queryDistributionData = async(start, end) => {
+    const result = await dijkstra(start, end);
+    const path = [],
+        resPath = result.path;
+    for (let i = 0; i < result.path.length - 1; i++) {
+        const start = resPath[i],
+            end = resPath[i + 1];
+        path.push({ start: start, end: end, distance: Graph[start][end] })
+    }
+    return {
+        distance: result.distance,
+        path: path,
+    };
 }
 
 const queryProvinceData = async() => {
@@ -190,6 +212,7 @@ module.exports = {
     queryAllEmail,
     queryEpidemicDataOfAllProvinces,
     querySupplyQuantityOfAllProvinces,
+    querySupplyAbility,
     queryDistributionData,
     queryProvinceData,
     queryMedicalSupplyData,
